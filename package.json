@@ -1,13 +1,23 @@
 {
   "name": "pennthrift",
+  "jest": {
+    "verbose": true,
+    "testEnvironment": "jsdom",
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+  }
+  },
   "version": "1.0.0",
   "description": "",
   "main": "server/server.js",
   "scripts": {
     "dev": "concurrently \"nodemon server/server.js\" \"cd ./client && npm start\"",
-    "start": "node server/server.js"
+    "start": "node server/server.js",
+    "test": "jest --watch",
+    "coverage": "nyc npm run test"
   },
   "dependencies": {
+    "@babel/preset-env": "^7.17.10",
     "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
     "concurrently": "^7.1.0",
@@ -25,8 +35,25 @@
     "nodemon": "^2.0.15",
     "passport": "^0.5.2",
     "passport-local": "^1.0.0",
+    "sinon": "^14.0.0",
     "socket.io": "^4.5.0"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/plugin-syntax-jsx": "^7.16.7",
+    "@babel/preset-react": "^7.16.7",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.2.0",
+    "babel-jest": "^28.1.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.6",
+    "jest": "^28.1.0",
+    "jest-environment-jsdom": "^28.1.0",
+    "jest-enzyme": "^7.1.2",
+    "nyc": "^15.1.0",
+    "react-test-renderer": "^18.1.0"
+  }
 }

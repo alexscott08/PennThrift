@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getUserProfile } from '../api/ProfileAPI';
 import io from 'socket.io-client';
-import { path } from '../api/ProfileAPI';
+import React from 'react';
 
 
-const socket = io.connect(`${path}/api/messages`)
+const socket = io.connect('http://localhost:4000/api/messages')
 
 
 const Header = props =>{
@@ -51,25 +51,25 @@ const Header = props =>{
 
    
     return(
-        <div className="w-full bg-[#454545] py-2 flex justify-between h-12">
+        <div data-testid="header" dataclassName="w-full bg-[#454545] py-2 flex justify-between h-12">
             {
                 global.LOGGED_IN &&
-                 <div onClick={() => logOut()}className='h-full cursor-pointer w-40 flex mx-5 justify-center items-center bg-white'>Logout</div>
+                 <div data-testid="logout" onClick={() => logOut()}className='h-full cursor-pointer w-40 flex mx-5 justify-center items-center bg-white'>Logout</div>
             
             }
             {
                 !global.LOGGED_IN &&
                 <Link to='/login' className='h-full cursor-pointer w-40 flex mx-5 justify-center items-center bg-white'>Login</Link>
             }
-            <div className='flex'>
+            <div data-testid="flex" className='flex'>
                 <Link to='/store'><img className='mx-1 w-8 h-8' src={require('../assets/shop_bag.png')}/></Link>
-                <Link className='relative' to='/profile/messages'>
-                    <div className='flex justify-center items-center py-[2px] px-[3px] text-white text-xs right-0 absolute rounded-full bg-red-600'>
+                <Link data-testid="relative" className='relative' to='/profile/messages'>
+                    <div data-testid="unread"className='flex justify-center items-center py-[2px] px-[3px] text-white text-xs right-0 absolute rounded-full bg-red-600'>
                         {unread}
                     </div>
-                    <img className='mx-1 w-8 h-8' src={require('../assets/messages.png')}/>
+                    <img data-testid="image" className='mx-1 w-8 h-8' src={require('../assets/messages.png')}/>
                 </Link>
-                <Link to='/profile/favourites'><img className='mx-1 w-8 h-8' src={require('../assets/favourite.png')}/></Link>
+                <Link to='/'><img className='mx-1 w-8 h-8' src={require('../assets/favourite.png')}/></Link>
                 <Link to='/profile'><img className='mx-1 w-8 h-8' src={require('../assets/placeholder_user_sm.png')}/></Link>
 
             </div>
