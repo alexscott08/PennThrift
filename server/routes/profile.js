@@ -17,14 +17,14 @@ router.route('/:username').get((req, res) => {
     .catch(err => res.status(400).json('Error! ' + err))
 });
 
-// delete profile/user by id
+// delete profile/user by username
 router.route('/delete/:username').delete((req, res) => {
     User.deleteOne({ username: req.params.username })
         .then(success => res.json('Success! User deleted.'))
         .catch(err => res.status(400).json('Error! ' + err))
 });
 
-// edit profile/user info by id
+// edit profile/user info by username
 router.route('/edit/:username').put((req, res) => {
     User.findOneAndUpdate({username: req.params.username }, req.body)
         .then(user => res.json('Success! User updated.'))
