@@ -7,7 +7,7 @@ import axios from 'axios';
 
 function Login({ navigation }) {
     const [error, setError] = React.useState();
-    const address = 'https://localhost:4000/api/auth/login'; 
+    const address = 'http://localhost:4000/api/auth/login'; 
 
     // function that sets user details
     function userDetails(username,password) {

@@ -13,7 +13,7 @@ const Store = ({ navigation, route }) => {
 
     useEffect(() => {
         if (state.items.length === 0) {
-            axios.get('https://localhost:4000/api/item/all/')
+            axios.get('http://localhost:4000/api/item/all/')
             .then(res => setState({items: res.data}))
             .catch(e => console.log(e));
         }
