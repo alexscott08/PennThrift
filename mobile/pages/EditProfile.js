@@ -104,7 +104,7 @@ const EditProfile = ({navigation, route}) => {
             var formData = new FormData();
             formData.append("file", image);
 
-            axios.post('http://localhost:4000/api/file/upload', formData,{
+            axios.post('https://localhost:4000/api/file/upload', formData,{
                 headers: {
                 'Content-Type': 'multipart/form-data'
                 }

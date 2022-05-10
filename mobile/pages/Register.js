@@ -6,7 +6,7 @@ import axios from 'axios';
 
 const Register = ({ navigation }) => {
     const [error, setError] = React.useState();
-    const address = 'http://localhost:4000/api/auth/register'; 
+    const address = 'https://localhost:4000/api/auth/register'; 
 
     function userDetails(username,password){
 

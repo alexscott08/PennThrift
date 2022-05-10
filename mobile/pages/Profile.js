@@ -38,7 +38,7 @@ const Profile = ({ navigation, route }) => {
 
         if(items.length === 0 && user){
 
-            axios.get(`http://localhost:4000/api/profile/items/${user}`)
+            axios.get(`https://localhost:4000/api/profile/items/${user}`)
             .then( res => {
                 setState(state => ({
                     ...state,
@@ -76,7 +76,7 @@ const Profile = ({ navigation, route }) => {
         const user = state.user || '';
 
         if(user){
-            axios.get('http://localhost:4000/api/profile/items/'+ user)
+            axios.get('https://localhost:4000/api/profile/items/'+ user)
             .then(res => setState(state => ({
                 ...state,
                 items: res.data.items.reverse(),
