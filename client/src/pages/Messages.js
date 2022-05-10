@@ -9,8 +9,9 @@ import { Link, useLocation } from 'react-router-dom';
 import ScrollableFeed from 'react-scrollable-feed'
 import FileViewer from 'react-file-viewer';
 import io from 'socket.io-client';
+import { path } from '../api/ProfileAPI';
 
-const socket = io.connect('http://localhost:4000/api/messages')
+const socket = io.connect(`${path}/api/messages`)
 
 const Messages = props => {
 

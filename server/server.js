@@ -17,7 +17,11 @@ const connection    = require('./db-config');
 const upload        = require('./routes/upload');
 const { Server }    = require('socket.io')
 const initializePassport = require('./passport-config');
-require('dotenv').config();
+if (process.env.NODE_ENV !== "production") {
+    require('dotenv').config();
+}
+
+const socketUrl = process.env.NODE_ENV !== "production" ? 'http://localhost:3000' : "https://penn-thrift.herokuapp.com"
 
 
 
@@ -94,7 +98,7 @@ const server  = require('http').Server(app);
 const io = require('socket.io')(server,{
     // Specifying CORS 
     cors: {
-        origin: 'http://localhost:3000',
+        origin: socketUrl,
         
     }
    })
@@ -103,4 +107,4 @@ require('./routes/messages')(io);
 
 //start server
 
-server.listen(port,() => console.log(`server is running on ${website}:${port}`));
+server.listen(process.env.PORT || port,() => console.log(`server is running on ${website}:${port}`));

@@ -7,8 +7,9 @@ import StoreItems from '../components/StoreItems';
 import { updateViews, getUserProfile } from "../api/ProfileAPI";
 import { useParams, useNavigate } from "react-router-dom";
 import io from 'socket.io-client';
+import { path } from "../api/ProfileAPI";
 
-const socket = io.connect('http://localhost:4000/api/messages')
+const socket = io.connect(`${path}/api/messages`);
 
 const  User = props => {
     
