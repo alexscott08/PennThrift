@@ -14,7 +14,7 @@
     "dev": "concurrently \"nodemon server/server.js\" \"cd ./client && npm start\"",
     "start": "node server/server.js",
     "build": "cd client && npm install -f && npm run build",
-    "test": "jest --watch",
+    "test": "jest --coverage",
     "coverage": "nyc npm run test"
   },
   "dependencies": {
