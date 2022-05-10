@@ -18,9 +18,7 @@ const Login = () =>{
         };
 
         axios.post(address, data).then(res =>{
-            console.log(res)
             if (res.status === 200) {
-                console.log('here')
                 editUserProfile(username, { last_login: res.time }).then(res => {
                     if (res === 'Success! User updated.') {
                         global.LOGGED_IN = true;
@@ -47,7 +45,6 @@ const Login = () =>{
                 }
             }
         }).catch(err => {
-            console.log(err)
             if (err.message.split(" ").pop() == '401' || err.message.split(" ").pop() == '429') {
                 getUserProfile(username).then(res => {
                     if (res != null) {
