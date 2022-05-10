@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import Form from '../components/Form';
 import axios from 'axios';
 import { getUserProfile, editUserProfile } from "../../client/src/api/ProfileAPI";
+const moment = require('moment');
 
 
 //import { useNavigate } from 'react-router';
