@@ -8,8 +8,6 @@ import { Linking } from 'react-native';
 import placeholder from '../assets/placeholder_user.png'
 import { useState } from 'react';
 
-var logged = false;
-
 const Profile = ({ navigation, route }) => {
     
     const { replace, username } = route.params;
@@ -42,10 +40,6 @@ const Profile = ({ navigation, route }) => {
 
             axios.get(`http://localhost:4000/api/profile/items/${user}`)
             .then( res => {
-                if (!logged) {
-                    console.log(res);
-                    logged = true;
-                }
                 setState(state => ({
                     ...state,
                     items: res.data.items.reverse(),
@@ -160,6 +154,18 @@ const Profile = ({ navigation, route }) => {
                                     underlayColor="#DDDDDD">
                                     <View style={styles.analytics_button}>
                                         <Text style={{fontSize: 20, fontWeight: "bold", color: "white"}}>View Analytics</Text>
+                                    </View>
+                                </Pressable>
+                            </View>
+
+                            <View style={styles.button}>
+                                <Pressable
+                                    onPress={() => 
+                                        navigation.navigate('EditProfile', { replace: true, username: username })}
+                                    activeOpacity={0.6}
+                                    underlayColor="#DDDDDD">
+                                    <View style={styles.analytics_button}>
+                                        <Text style={{fontSize: 20, fontWeight: "bold", color: "white"}}>Edit Profile</Text>
                                     </View>
                                 </Pressable>
                             </View>
