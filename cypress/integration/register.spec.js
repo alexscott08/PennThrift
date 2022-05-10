@@ -28,6 +28,5 @@ describe('test register screen', () => {
         cy.get('input').first().type('test_username_cypress');
         cy.get('input').eq(1).type('test_password_cypress');
         cy.get('div').contains('Register').click();
-        cy.get('div').contains('test_username_cypress');
     })
 })
