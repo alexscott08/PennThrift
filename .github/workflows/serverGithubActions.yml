@@ -13,8 +13,10 @@ jobs:
       - name: Use Node.js 16.14
       - uses: actions/setup-node@v3
         with:
-          node-version: "16.14"
-          cache: "npm"
+          node-version: '16.14'
+          cache: 'npm'
+      - run: npm install
+      - run: node_modules/.bin/jest --coverage
       - run: cd server
       - run: npm install
       - run: npm test
