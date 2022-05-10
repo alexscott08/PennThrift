@@ -7,9 +7,10 @@ import { getUserProfile, editUserProfile } from "../../client/src/api/ProfileAPI
 const moment = require('moment');
 
 
-//import { useNavigate } from 'react-router';
+// import { useNavigate } from 'react-router';
 
 function Login({ navigation }) {
+    
     const [error, setError] = React.useState();
     const address = 'http://localhost:4000/api/auth/login'; 
 
@@ -26,7 +27,7 @@ function Login({ navigation }) {
                 editUserProfile(username, { last_login: res.time }).then(res => {
                     if (res === 'Success! User updated.') {
                         global.LOGGED_IN = true;
-                        navigate('/profile', { replace: true })
+                        navigation.navigate('Profile', { replace: true, username: data.username })
                     }
                 });
             } else if (res.status === 202) {

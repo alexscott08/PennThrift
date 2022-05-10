@@ -24,6 +24,7 @@ export default function App() {
   const [loggedin, setLoggedin] = useState(null)
 
   axios.post('http://localhost:4000/api/auth/').then(res => {
+    console.log(res)
     global.LOGGED_IN = res.data[0];
     setLoggedin(res.data[0])
 });
