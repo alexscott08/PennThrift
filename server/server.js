@@ -21,7 +21,8 @@ require('dotenv').config();
 
 app.use(cookieParser())
 
-
+//temp because error
+var tempDBAccess = "mongodb+srv://pennthrift:A0NQwsElYopLKt97@pennthriftbackend.stiff.mongodb.net/PennThriftBackend?retryWrites=true&w=majority"
 
 //app sessions
 
@@ -35,7 +36,7 @@ app.use(session({
         expires:600000 // equals six days
     },
     store: MongoStore.create({
-        mongoUrl:process.env.DATABASE_ACCESS,
+        mongoUrl:tempDBAccess,
         collectionName:'userSessions'
     })
 }));
@@ -68,6 +69,6 @@ app.use('/api/analytics', analyticsRoutes);
 //start server
 const port = process.env.PORT || 4000;
 const website   = process.env.WEBSITE || 'http://localhost';
-app.listen(port,() => console.log(`server is running on ${website}:${port}`));
+// app.listen(port,() => console.log(`server is running on ${website}:${port}`));
 
 module.exports = app;

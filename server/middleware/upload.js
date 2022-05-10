@@ -1,8 +1,12 @@
 const multer = require("multer");
 const { GridFsStorage } = require("multer-gridfs-storage");
+require('dotenv').config();
+
+var tempDBAccess = "mongodb+srv://pennthrift:A0NQwsElYopLKt97@pennthriftbackend.stiff.mongodb.net/PennThriftBackend?retryWrites=true&w=majority"
 
 const storage = new GridFsStorage({
-    url: process.env.DATABASE_ACCESS,
+    // url: process.env.DATABASE_ACCESS,
+    url:tempDBAccess,
     options: { useNewUrlParser: true, useUnifiedTopology: true },
     file: (req, file) => {
         const match = ["image/png","image/gif", "image/jpeg"];

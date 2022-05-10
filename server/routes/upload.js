@@ -22,11 +22,16 @@ connection.once('open', () => {
 
 
 router.post('/upload', upload.single('file'), async (req, res) => {
-    if (req.file === undefined) return res.send('you must select a file.');
+    try {
+        if (req.file === undefined) return res.send('you must select a file.');
 
-    const imgUrl = `${website}:${port}/api/file/${req.file.filename}`;
+        const imgUrl = `${website}:${port}/api/file/${req.file.filename}`;
 
-    return res.send(imgUrl);
+        return res.send(imgUrl);
+    } catch (error) {
+        res.send("error with upload")
+    }
+    
 });
 
 router.get("/:filename", async (req, res) => {
