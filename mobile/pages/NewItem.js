@@ -99,7 +99,7 @@ const NewItem = ({ navigation, route }) => {
 
     function submit(){
         console.log("her")
-        if(itemName && description && category && price && user && userID && image){
+        if(itemName && description && category && price && user && userID){
             setClickable(false)
             var formData = new FormData();
             formData.append("file", image);
@@ -243,14 +243,15 @@ const NewItem = ({ navigation, route }) => {
                         /> */}
                             <Button
                                 title= {"Submit"}
-                                onPress={() => alert(
-                                 'You just posted an item to the marketplace',
-                                 'Check out your new listing.',
-                                 [
-                                     {text: 'OK', onPress: () => submit()}
-                                 ],
-                                 { cancelable: false }
-                                 )}
+                                onPress={submit}
+                                //     alert(
+                                //  'You just posted an item to the marketplace',
+                                //  'Check out your new listing.',
+                                //  [
+                                //      {text: 'OK', onPress: () => submit()}
+                                //  ],
+                                //  { cancelable: false }
+                                //  )}
                                 ></Button>
                         </View>
 
