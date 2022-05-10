@@ -45,7 +45,15 @@ const userSchema = new Schema({
     chats: [{type: Schema.Types.ObjectId, ref: 'Messages'}],
     pending_notifs: [{type: Schema.Types.ObjectId, ref: 'Notification'}],
     profile_views: {
-        type: [{type: Number}], default: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
+        type: [{type: Number}], default: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]},
+    last_login: {
+        type: Date,
+        default: Date.now,
+    },
+    locked_out: {
+        type: Boolean,
+        default: false,
+    }
 }, { collection: 'User' });
 
 module.exports = mongoose.model('PennThriftBackend', userSchema, 'User');
