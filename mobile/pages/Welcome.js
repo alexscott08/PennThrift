@@ -9,7 +9,7 @@ const Welcome = ({ navigation }) =>{
     return(
         <View style={styles.container}>
             <View >
-                <View style={styles.image}><Image source={require('../assets/logo.png')}/></View>
+                <View><Image style={styles.image} source={require('../assets/logo.png')}/></View>
                 <View >
                        <Text style={styles.title}>Welcome to PennThrift!</Text>
                 </View>
@@ -97,7 +97,10 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '100%',
+        height: 40,
+        width: 40,
+        alignSelf: 'center',
+        // width: '20',
         backgroundColor: "#FFFFFF"
       },
       title: {
