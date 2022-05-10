@@ -149,7 +149,7 @@ const Profile = ({ navigation, route }) => {
                             <View style={styles.button}>
                                 <Pressable
                                     onPress={() => 
-                                        navigation.navigate('Analytics')}
+                                        navigation.navigate('Analytics', {username: username})}
                                     activeOpacity={0.6}
                                     underlayColor="#DDDDDD">
                                     <View style={styles.analytics_button}>

@@ -3,7 +3,7 @@ import axios from "axios";
 import Header from "../components/Header";
 import { Alert, Dimensions, StyleSheet, Text, View, Image, Pressable, Button, ScrollView, TouchableHighlight } from 'react-native';
 import { useState } from "react";
-//import { getUserProfile } from "../api/ProfileAPI";
+import { getUserProfile } from "../../client/src/api/ProfileAPI";
 //import { Chart } from 'react-chartjs-2';
 import {
     LineChart,
@@ -16,33 +16,33 @@ import {
 
 
 const Analytics = ({ navigation, route }) => {
-
-    /*
+    const { username } = route.params
     const [userInfo, setUserInfo]           = useState('');
     const [imageDisplay, setImageDisplay]   = useState('');
     const [processed, setProcessed]         = useState(false);
-    const [user, setUser]                   = useState('');
+    const [user, setUser]                   = useState(username);
     const [items, setItems]                 = useState('');
     const [views, setViews]                 = useState([]);
     
     const getUserInfo = async () => {
-        if (!userInfo) {
-            const res = await axios.get('/api/auth/user');
-            setUser(res.data);
-            if(user)setUserInfo(await getUserProfile(user));
-        }
+        // if (!userInfo) {
+            // const res = await axios.get('/api/auth/user');
+            // setUser(res.data);
+            // if(user)setUserInfo(await getUserProfile(user));
+        // }
+        setUserInfo(await getUserProfile(user));
         if(userInfo && !processed){
             processUserInfo(userInfo);
             setProcessed(true);
         }
         if(views.length == 0 && user ){
-            axios.get(`/api/analytics/profile/views/${user}`)
+            axios.get(`http://localhost:4000/api/analytics/profile/views/${user}`)
             .then( res => {
                 setViews(res.data.profile_views)
             })
         }
         if(user && !items){
-            axios.get(`/api/profile/items/${user}`)
+            axios.get(`http://localhost:4000/api/profile/items/${user}`)
                     .then( res => {setItems(res.data.items.reverse())})
                     .catch(e => console.log(e))
         }
@@ -56,7 +56,17 @@ const Analytics = ({ navigation, route }) => {
     }
 
     useState(()=>{},[views])
-
+    const chartConfig = {
+        backgroundGradientFrom: "#1E2923",
+        backgroundGradientFromOpacity: 0,
+        backgroundGradientTo: "#08130D",
+        backgroundGradientToOpacity: 0,
+        color: (opacity = 1) => "#013587",
+        strokeWidth: 2, // optional, default 3
+        barPercentage: 0.5,
+        useShadowColorFromDataset: false // optional
+      };
+    const screenWidth = Dimensions.get("window").width;
     const stat = {
         labels: ['Jan', 'Feb', 'Mar',
                 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -77,74 +87,14 @@ const Analytics = ({ navigation, route }) => {
         scales: {
         }
       }
-    */
-
-      const data = {
-        labels: ['Jan', 'Feb', 'Mar',
-                'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        datasets: [
-            {
-                label: 'Views',
-                backgroundColor: 'rgba(75,192,192,1)',
-                borderColor: '"#013587"',
-                data: [32, 25, 28, 17, 27, 28, 22, 30, 29, 33, 37]
-            }
-        ],
-        legend: ["PROFILE VIEWS"]
-      };
     
-      const chartConfig = {
-        backgroundGradientFrom: "#1E2923",
-        backgroundGradientFromOpacity: 0,
-        backgroundGradientTo: "#08130D",
-        backgroundGradientToOpacity: 0,
-        color: (opacity = 1) => "#013587",
-        strokeWidth: 2, // optional, default 3
-        barPercentage: 0.5,
-        useShadowColorFromDataset: false // optional
-      };
-      
-    const screenWidth = Dimensions.get("window").width;
-
-    const user = "girlboss"
-
-    const item1 = {
-        id:1,
-        image:'https://www.quirkbooks.com/sites/default/files/styles/blog_detail_featured_image/public/editor_uploads/original/baby-bunny.jpg?itok=aS4SUzrj',
-        category: "bunny",
-        name:"Beige Goosh",
-        owner: "girlboss",
-        price:"12,000",
-        views:40
-    };
-    const item2 = {
-        id:2, image:'https://scontent-iad3-1.xx.fbcdn.net/v/t1.6435-9/120563330_3251679801596421_5774388050002439408_n.jpg?stp=cp0_dst-jpg_e15_fr_q65&_nc_cat=103&ccb=1-6&_nc_sid=dd9801&efg=eyJpIjoidCJ9&_nc_ohc=Xa5gJQfuKkkAX9LvZS3&_nc_ht=scontent-iad3-1.xx&oh=00_AT9PzXjneY7V8ieyvVvQJBn6SXp5jA-PXhGrFK7MNzgZQQ&oe=62987064',
-        category:"bunny",
-        name:"Black Goosh",
-        owner:"girlboss",
-        price:"40,000",
-        views:90
-    };
-
-    const item3 = {
-        id:3,
-        image:'http://4everstatic.com/pictures/850xX/animals/bunnies/spotted-bunny-152895.jpg',
-        category:"bunny",
-        name:"Spotted Goosh",
-        owner: "girlboss",
-        price:"70,000",
-        views:25
-    };
-
-    const items = [item1, item2, item3];
-
     return(
         <ScrollView>
             <Header navigation={navigation}/>
             <View>
                 <View>
                     <View>
-                        <Image style={styles.profile_pic} source={require('../assets/placeholder_user.png')}/>
+                        <Image style={styles.profile_pic} source={imageDisplay || require('../assets/placeholder_user.png')}/>
                     </View>
 
                     <View>
@@ -156,7 +106,7 @@ const Analytics = ({ navigation, route }) => {
 
                         <View style={styles.chart_view}>
                             <LineChart
-                                data={data}
+                                data={stat}
                                 width={screenWidth}
                                 height={220}
                                 chartConfig={chartConfig}
@@ -237,3 +187,64 @@ const styles = StyleSheet.create({
   });
 
 export default Analytics;
+
+/*
+      const data = {
+        labels: ['Jan', 'Feb', 'Mar',
+                'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        datasets: [
+            {
+                label: 'Views',
+                backgroundColor: 'rgba(75,192,192,1)',
+                borderColor: '"#013587"',
+                data: [32, 25, 28, 17, 27, 28, 22, 30, 29, 33, 37]
+            }
+        ],
+        legend: ["PROFILE VIEWS"]
+      };
+    
+      const chartConfig = {
+        backgroundGradientFrom: "#1E2923",
+        backgroundGradientFromOpacity: 0,
+        backgroundGradientTo: "#08130D",
+        backgroundGradientToOpacity: 0,
+        color: (opacity = 1) => "#013587",
+        strokeWidth: 2, // optional, default 3
+        barPercentage: 0.5,
+        useShadowColorFromDataset: false // optional
+      };
+      
+    const screenWidth = Dimensions.get("window").width;
+
+    const user = "girlboss"
+
+    const item1 = {
+        id:1,
+        image:'https://www.quirkbooks.com/sites/default/files/styles/blog_detail_featured_image/public/editor_uploads/original/baby-bunny.jpg?itok=aS4SUzrj',
+        category: "bunny",
+        name:"Beige Goosh",
+        owner: "girlboss",
+        price:"12,000",
+        views:40
+    };
+    const item2 = {
+        id:2, image:'https://scontent-iad3-1.xx.fbcdn.net/v/t1.6435-9/120563330_3251679801596421_5774388050002439408_n.jpg?stp=cp0_dst-jpg_e15_fr_q65&_nc_cat=103&ccb=1-6&_nc_sid=dd9801&efg=eyJpIjoidCJ9&_nc_ohc=Xa5gJQfuKkkAX9LvZS3&_nc_ht=scontent-iad3-1.xx&oh=00_AT9PzXjneY7V8ieyvVvQJBn6SXp5jA-PXhGrFK7MNzgZQQ&oe=62987064',
+        category:"bunny",
+        name:"Black Goosh",
+        owner:"girlboss",
+        price:"40,000",
+        views:90
+    };
+
+    const item3 = {
+        id:3,
+        image:'http://4everstatic.com/pictures/850xX/animals/bunnies/spotted-bunny-152895.jpg',
+        category:"bunny",
+        name:"Spotted Goosh",
+        owner: "girlboss",
+        price:"70,000",
+        views:25
+    };
+
+    const items = [item1, item2, item3];
+*/
