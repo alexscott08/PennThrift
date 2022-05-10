@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import React from 'react';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { editUserProfile, getUserProfile } from "../../client/src/api/ProfileAPI";
+import { editUserProfile, getUserProfile } from "../ProfileAPI.js";
 import placeholder from '../assets/placeholder_user.png';
 import { Alert, StyleSheet, Text, TextInput, View, Image, Pressable, Button, ScrollView, TouchableHighlight } from 'react-native';
 

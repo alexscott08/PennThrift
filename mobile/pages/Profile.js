@@ -2,7 +2,7 @@ import React from 'react';
 import axios from "axios";
 import Header from "../components/Header";
 import ProfileListings from "../components/ProfileListings";
-import { getUserProfile } from "../../client/src/api/ProfileAPI";
+import { getUserProfile } from "../ProfileAPI.js";
 import { Alert, StyleSheet, Text, View, Image, Pressable, Button, ScrollView, TouchableHighlight } from 'react-native';
 import { Linking } from 'react-native';
 import placeholder from '../assets/placeholder_user.png'
