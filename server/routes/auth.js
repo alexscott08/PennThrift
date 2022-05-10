@@ -5,8 +5,8 @@ const User          = require('../models/user.model');
 const bcrypt        = require('bcrypt');
 const passport      = require('passport');
 const session       = require('express-session');
-const moment = require('moment');
-const ExpressBrute = require('express-brute');
+const moment        = require('moment');
+const ExpressBrute  = require('express-brute');
 const store = new ExpressBrute.MemoryStore(); // stores state locally, don't use this in production
 let message = '';
 

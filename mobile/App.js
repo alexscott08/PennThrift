@@ -6,9 +6,6 @@ import Welcome from './pages/Welcome';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
-<<<<<<< HEAD
-import EditProfile from './pages/EditProfile';
-=======
 import NewItem from './pages/NewItem';
 import Store from './pages/Store';
 import Chat from './pages/Chat';
@@ -20,7 +17,6 @@ import Item from './pages/Item';
 import EditProfile from './pages/EditProfile';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
->>>>>>> origin/main
 
 
 const Stack = createNativeStackNavigator();
@@ -37,11 +33,6 @@ export default function App() {
         <Stack.Screen name = "Welcome" component={Welcome} />
         <Stack.Screen name = "Register" component={Register} />
         <Stack.Screen name = "Login" component={Login}/>
-<<<<<<< HEAD
-        <Stack.Screen name = "Profile" component={Profile} />
-        <Stack.Screen name = "EditProfile" component={EditProfile} />
-        </Stack.Navigator>
-=======
         <Stack.Screen name = "Profile" component={Profile}/>
         <Stack.Screen name = "NewItem" component={NewItem}/>
         <Stack.Screen name = "Store" component={Store}/>
@@ -53,7 +44,6 @@ export default function App() {
         <Stack.Screen name = "Item" component={Item}/>
         <Stack.Screen name = "EditProfile" component={EditProfile}/>
       </Stack.Navigator>
->>>>>>> origin/main
     </NavigationContainer>
   )
 }
