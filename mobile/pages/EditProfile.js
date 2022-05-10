@@ -336,7 +336,7 @@ const EditProfile = ({navigation, route}) => {
                                 text="Apparel"
                                 iconStyle={{ borderColor: "red" }}
                                 textStyle={{ textDecorationLine: "none"}}
-                                // onPress={(isChecked) => {}}
+                                onPress={(isChecked) => processInterests("Apparel")}
                                 // use onPress to make note of which filters we're using
                             />
                             <BouncyCheckbox
@@ -346,7 +346,7 @@ const EditProfile = ({navigation, route}) => {
                                 text="Books/ notes"
                                 iconStyle={{ borderColor: "red" }}
                                 textStyle={{ textDecorationLine: "none"}}
-                                //onPress={(isChecked: boolean) => {}}
+                                onPress={(isChecked) => processInterests("Books/ notes")}
                             />
                             <BouncyCheckbox
                                 size={25}
@@ -355,7 +355,7 @@ const EditProfile = ({navigation, route}) => {
                                 text="Furniture"
                                 iconStyle={{ borderColor: "red" }}
                                 textStyle={{ textDecorationLine: "none"}}
-                                //onPress={(isChecked: boolean) => {}}
+                                onPress={(isChecked) => processInterests("Furniture")}
                             />
                             <BouncyCheckbox
                                 size={25}
@@ -364,7 +364,7 @@ const EditProfile = ({navigation, route}) => {
                                 text="Electronics"
                                 iconStyle={{ borderColor: "red" }}
                                 textStyle={{ textDecorationLine: "none"}}
-                                //onPress={(isChecked: boolean) => {}}
+                                onPress={(isChecked) => processInterests("Electronics")}
                             />
                             <BouncyCheckbox
                                 size={25}
@@ -373,7 +373,7 @@ const EditProfile = ({navigation, route}) => {
                                 text="Tickets"
                                 iconStyle={{ borderColor: "red" }}
                                 textStyle={{ textDecorationLine: "none"}}
-                                //onPress={(isChecked: boolean) => {}}
+                                onPress={(isChecked) => processInterests("Tickets")}
                             />
                             <BouncyCheckbox
                                 size={25}
@@ -382,7 +382,7 @@ const EditProfile = ({navigation, route}) => {
                                 text="Miscellaneous"
                                 iconStyle={{ borderColor: "red" }}
                                 textStyle={{ textDecorationLine: "none"}}
-                                //onPress={(isChecked: boolean) => {}}
+                                onPress={(isChecked) => processInterests("Miscellaneous")}
                             />
                         </View>
                     </View>
