@@ -14,12 +14,13 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 // TODO: pass user info through props instead of axios
 const EditProfile = ({navigation, route}) => {
 
-    /*
+    
     
     const { replace, username } = route.params;
 
     const [bio, setBio]                     = useState('Edit description');
-    const [user, setUser]                   = useState('');
+    const [name, setName]                   = useState('');
+    const [user, setUser]                   = useState(username);
     const [userInfo, setUserInfo]           = useState('');
     const [image, setImage]                 = useState( );
     const [imageDisplay, setImageDisplay]   = useState('');
@@ -63,15 +64,15 @@ const EditProfile = ({navigation, route}) => {
         setImageDisplay(profile_pic);
     }
 
-    function handleClick(){
-        document.getElementById('selectImage').click()
-    }
+    // function handleClick(){
+    //     document.getElementById('selectImage').click()
+    // }
 
 
-    function processImage(image){
-        setImage(image);
-        setImageDisplay(URL.createObjectURL(image));
-    }
+    // function processImage(image){
+    //     setImage(image);
+    //     setImageDisplay(URL.createObjectURL(image));
+    // }
 
     function processInterests(val){
         var intrs = [...interests];
@@ -118,7 +119,7 @@ const EditProfile = ({navigation, route}) => {
                 const data = {
                     bio:bio,
                     profile_pic:imageUrl,
-                    username:user,
+                    username:name,
                     venmo:venmo,
                     class_year:year,
                     interests:interests,
@@ -126,7 +127,7 @@ const EditProfile = ({navigation, route}) => {
 
                 editUserProfile(user, data).then(res =>{
                     if(res === 'Success! User updated.'){
-                        navigate('/profile', {replace:true})
+                        navigation.navigate('Profile', {replace:true, username: name})
                     }
                 })
             
@@ -137,7 +138,7 @@ const EditProfile = ({navigation, route}) => {
             const data = {
                 bio:bio,
                 profile_pic:'',
-                username:user,
+                username:name,
                 venmo:venmo,
                 class_year:year,
                 interests:interests,
@@ -146,7 +147,7 @@ const EditProfile = ({navigation, route}) => {
 
             editUserProfile(user, data).then(res =>{
                 if(res === 'Success! User updated.'){
-                    navigate('/profile', {replace:true})
+                    navigation.navigate('Profile', {replace:true, username: name})
                 }
             })
             return;
@@ -154,7 +155,7 @@ const EditProfile = ({navigation, route}) => {
             const data = {
                 bio:bio,
                 profile_pic:'',
-                username:user,
+                username:name,
                 venmo:venmo,
                 class_year:year,
                 interests:interests,
@@ -162,7 +163,7 @@ const EditProfile = ({navigation, route}) => {
 
             editUserProfile(user, data).then(res =>{
                 if(res === 'Success! User updated.'){
-                    navigate('/profile', {replace:true})
+                    navigation.navigate('Profile', {replace:true, username: name})
                 }
             })
 
@@ -170,15 +171,15 @@ const EditProfile = ({navigation, route}) => {
         setLoading(false);
         return;
     }
-    */
+    
 
 
-    const imageDisplay = "https://asia.olympus-imaging.com/content/000107506.jpg";
-    const username = "toucan";
-    const bio = "I am a toucan";
-    const year = 2023;
-    const interests = [ "a", "b", "c" ];
-    const venmo = "toucan";
+    // const imageDisplay = "https://asia.olympus-imaging.com/content/000107506.jpg";
+    // const username = "toucan";
+    // const bio = "I am a toucan";
+    // const year = 2023;
+    // const interests = [ "a", "b", "c" ];
+    // const venmo = "toucan";
 
     const [classYear, setClassYear] = useState('');
 
@@ -204,7 +205,7 @@ const EditProfile = ({navigation, route}) => {
                             </View>
 
                             <View style={styles.username_view}>
-                                <Text style={styles.username}>{username}</Text>
+                                <Text style={styles.username}>{username ? username : name}</Text>
                             </View>
 
                             <View style={styles.description_view}>
@@ -272,7 +273,7 @@ const EditProfile = ({navigation, route}) => {
                             </Text>
                         </View>
                         <View style={styles.text_box_view}>
-                            <TextInput placeholder="Change your name" style={styles.text_box}/>
+                            <TextInput placeholder="Change your name" style={styles.text_box} onChange={e => setName(e.target.value)}/>
                         </View>
                     </View>
 
@@ -285,7 +286,7 @@ const EditProfile = ({navigation, route}) => {
                             </Text>
                         </View>
                         <View style={styles.text_box_view}>
-                            <TextInput placeholder="Change your venmo" style={styles.text_box}/>
+                            <TextInput placeholder="Change your venmo" style={styles.text_box} onChange={e => setVenmo(e.target.value)}/>
                         </View>
                     </View>
 
@@ -298,7 +299,7 @@ const EditProfile = ({navigation, route}) => {
                             </Text>
                         </View>
                         <View style={styles.text_box_view}>
-                            <TextInput placeholder="Change your description" style={styles.text_box}/>
+                            <TextInput placeholder="Change your description" style={styles.text_box} onChange={e => setBio(e.target.value)}/>
                         </View>
                     </View>
 
@@ -316,7 +317,7 @@ const EditProfile = ({navigation, route}) => {
                                     radio_props={class_options}
                                     initial={0}
                                     onPress={(value) => {
-                                        setClassYear(value);
+                                        setYear(value);
                                     }}
                                 />
                         </View>
@@ -335,7 +336,7 @@ const EditProfile = ({navigation, route}) => {
                                 text="Apparel"
                                 iconStyle={{ borderColor: "red" }}
                                 textStyle={{ textDecorationLine: "none"}}
-                                //onPress={(isChecked: boolean) => {}}
+                                onPress={(isChecked) => processInterests("Apparel")}
                                 // use onPress to make note of which filters we're using
                             />
                             <BouncyCheckbox
@@ -345,7 +346,7 @@ const EditProfile = ({navigation, route}) => {
                                 text="Books/ notes"
                                 iconStyle={{ borderColor: "red" }}
                                 textStyle={{ textDecorationLine: "none"}}
-                                //onPress={(isChecked: boolean) => {}}
+                                onPress={(isChecked) => processInterests("Books/ notes")}
                             />
                             <BouncyCheckbox
                                 size={25}
@@ -354,7 +355,7 @@ const EditProfile = ({navigation, route}) => {
                                 text="Furniture"
                                 iconStyle={{ borderColor: "red" }}
                                 textStyle={{ textDecorationLine: "none"}}
-                                //onPress={(isChecked: boolean) => {}}
+                                onPress={(isChecked) => processInterests("Furniture")}
                             />
                             <BouncyCheckbox
                                 size={25}
@@ -363,7 +364,7 @@ const EditProfile = ({navigation, route}) => {
                                 text="Electronics"
                                 iconStyle={{ borderColor: "red" }}
                                 textStyle={{ textDecorationLine: "none"}}
-                                //onPress={(isChecked: boolean) => {}}
+                                onPress={(isChecked) => processInterests("Electronics")}
                             />
                             <BouncyCheckbox
                                 size={25}
@@ -372,7 +373,7 @@ const EditProfile = ({navigation, route}) => {
                                 text="Tickets"
                                 iconStyle={{ borderColor: "red" }}
                                 textStyle={{ textDecorationLine: "none"}}
-                                //onPress={(isChecked: boolean) => {}}
+                                onPress={(isChecked) => processInterests("Tickets")}
                             />
                             <BouncyCheckbox
                                 size={25}
@@ -381,7 +382,7 @@ const EditProfile = ({navigation, route}) => {
                                 text="Miscellaneous"
                                 iconStyle={{ borderColor: "red" }}
                                 textStyle={{ textDecorationLine: "none"}}
-                                //onPress={(isChecked: boolean) => {}}
+                                onPress={(isChecked) => processInterests("Miscellaneous")}
                             />
                         </View>
                     </View>
@@ -392,7 +393,7 @@ const EditProfile = ({navigation, route}) => {
                 <View >
                     <Button
                         title= {"Update Your Profile"}
-                        onPress={() => handleSubmit }
+                        onPress={() => save() }
                     />
                 </View>
             </View>

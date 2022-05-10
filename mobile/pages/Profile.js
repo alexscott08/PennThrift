@@ -99,7 +99,7 @@ const Profile = ({ navigation, route }) => {
                             </View>
 
                             <View style={styles.username_view}>
-                                <Text style={styles.username}>{state.user}</Text>
+                                <Text style={styles.username}>{username}</Text>
                             </View>
 
                             <View style={styles.description_view}>
@@ -149,7 +149,7 @@ const Profile = ({ navigation, route }) => {
                             <View style={styles.button}>
                                 <Pressable
                                     onPress={() => 
-                                        navigation.navigate('Analytics', {username: username})}
+                                        navigation.navigate('Analytics')}
                                     activeOpacity={0.6}
                                     underlayColor="#DDDDDD">
                                     <View style={styles.analytics_button}>
