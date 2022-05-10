@@ -173,7 +173,7 @@ const Profile = ({ navigation, route }) => {
                             <View style={styles.button}>
                                 <Pressable
                                     onPress={() => 
-                                        navigation.navigate('NewItem')}>
+                                        navigation.navigate('NewItem', { username: username })}>
                                     <View style={styles.new_item_button}>
                                         <Text style={{fontSize: 20, fontWeight: "bold", color: "white"}}>Add New Item</Text>
                                     </View>

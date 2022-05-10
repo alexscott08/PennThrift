@@ -6,40 +6,99 @@ import ProfileListings from "../components/ProfileListings";
 import { Alert, StyleSheet, Text, View, Image, Pressable, Button, ScrollView, TouchableHighlight, TextInput } from 'react-native';
 import { Linking } from 'react-native';
 import RadioForm from 'react-native-simple-radio-button';
-
-
+import { Divider } from 'react-native-elements';
+// import BouncyCheckboxGroup, {
+//     ICheckboxButton,
+//   } from "react-native-bouncy-checkbox-group";
+// import CheckboxGroup from 'react-native-checkbox-group'
+import RadioGroup from 'react-native-radio-buttons-group';
 const NewItem = ({ navigation, route }) => {
-
+    const { username } = route.params
     const [itemName, setItemName]           = useState(''); ///
     const [description, setDescription]     = useState(''); ///
-    const [conditiion, setCondition]        = useState('');
-    const [category, setCategory]           = useState('');
+    
     const [price, setPrice]                 = useState(0);  ///
     const [image, setImage]                 = useState( );
     const [imageDisplay, setImageDisplay]   = useState('');
     const [userID, setUserID]               = useState('');
-    const [user, setUser]                   = useState('');
+    const [user, setUser]                   = useState(username);
     const [error, setError]                 = useState('');
     const [clickable, setClickable]         = useState(true)
-    const conditiions = ['New', 'Like new', 'Lightly used', 'Used'];
-    const categories  = ['For Fun', 'Vehicle', 'Apparel', 'Tickets', 
-                            'Furniture', 'Electronics', 'Books/ notes', 'Miscellaneous']
+    // const conditions = ['New', 'Like new', 'Lightly used', 'Used'];
+    // const categories  = ['For Fun', 'Vehicle', 'Apparel', 'Tickets', 
+    //                         'Furniture', 'Electronics', 'Books/ notes', 'Miscellaneous']
     //const navigate = useNavigate();
     //const inputRef = useRef()
+    const conditionsRadioButtonsData  = [{
+        id: '1', // acts as primary key, should be unique and non-empty string
+        label: 'New',
+        value: 'New'
+    }, {
+        id: '2',
+        label: 'Like new',
+        value: 'Like new'
+    }, {
+        id: '3',
+        label: 'Lightly used',
+        value: 'Lightly used'
+    }, {
+        id: '4',
+        label: 'Used',
+        value: 'Used'
+    }];
+    const categoriesRadioButtonsData  = [{
+        id: '1', // acts as primary key, should be unique and non-empty string
+        label: 'For Fun',
+        value: 'For Fun'
+    }, {
+        id: '2',
+        label: 'Vehicle',
+        value: 'Vehicle'
+    }, {
+        id: '3',
+        label: 'Apparel',
+        value: 'Apparel'
+    }, {
+        id: '4',
+        label: 'Tickets',
+        value: 'Tickets'
+    },{
+        id: '5', // acts as primary key, should be unique and non-empty string
+        label: 'Furniture',
+        value: 'Furniture'
+    }, {
+        id: '6',
+        label: 'Electronics',
+        value: 'Electronics'
+    }, {
+        id: '7',
+        label: 'Books/ notes',
+        value: 'Books/ notes'
+    }, {
+        id: '8',
+        label: 'Miscellaneous',
+        value: 'Miscellaneous'
+    }];
+    const [condition, setCondition] = useState(conditionsRadioButtonsData);
+    const [category, setCategory] = useState(categoriesRadioButtonsData);
 
-    /*
+    function onPressConditionsRadioButton(radioButtonsArray) {
+        setCondition(radioButtonsArray);
+    }
+    function onPressCategoriesRadioButton(radioButtonsArray) {
+        setCategory(radioButtonsArray);
+    }
+
     useEffect(() =>{
-        if(!user && !userID){
-            axios.get('/api/auth/user').then( res => {
-                setUser(res.data);
-                axios.get('/api/profile/' + res.data).then( res => {
-                    setUserID(res.data._id)
-                })
-            })
+        if(!!userID){
+            axios.get('/api/profile/' + user).then(res => {
+                setUserID(res.data._id)
+            });
         }
     });
 
     function submit(){
+        console.log("her")
         if(itemName && description && category && price && user && userID && image){
             setClickable(false)
             var formData = new FormData();
@@ -50,6 +109,7 @@ const NewItem = ({ navigation, route }) => {
                 }
             }).then( res => {
                 let imageUrl = res.data; 
+                console.log("asd")
                 const data = {
                     name:itemName,
                     description:description,
@@ -64,11 +124,11 @@ const NewItem = ({ navigation, route }) => {
     
                 axios.post('/api/profile/item/new', data).then(res => {
                     if(res.data == 'Item added succesfully'){
-                        navigate('/profile', { replace:true })
+                        navigate('/profile', { replace:true, username: username })
                     }
                 })
             })
-        }else{
+        } else {
             setError('Please fill out all items')
         }
     };
@@ -81,38 +141,7 @@ const NewItem = ({ navigation, route }) => {
         setImage(image);
         setImageDisplay(URL.createObjectURL(image));
     }
-    */
     
-
-    const [chosenOption, setChosenOption] = useState('');
-
-    const condition_options = [
-        { label: 'New', value: 'new' },
-        { label: 'Like new', value: 'like new' },
-        { label: 'Lightly used', value: 'lightly used' },
-        { label: 'Used', value: 'used' }
-    ];
-
-    const category_options = [
-        { label: 'For Fun', value: 'for fun' },
-        { label: 'Vehicle', value: 'vehicle' },
-        { label: 'Apparel', value: 'apparel' },
-        { label: 'Tickets', value: 'tickets' },
-        { label: 'Furniture', value: 'furniture' },
-        { label: 'Electronics', value: 'electronics' },
-        { label: 'Books/ notes', value: 'books/ notes' },
-        { label: 'Miscellaneous', value: 'miscellaneous' },
-    ];
-
-    const handlePress = () => {
-        navigation.navigate('Profile', { username: "girlboss" })
-        // Add the new item to the user's collection of listings
-    }
-
-    const Separator = () => (
-        <View style={styles.separator} />
-    );
-
     // add header
     return(
         <ScrollView style={styles.container}>
@@ -136,7 +165,7 @@ const NewItem = ({ navigation, route }) => {
                         </View>
                         <Image source={imageDisplay}/>
 
-                        <Separator />
+                        <Divider />
 
                         <View>
                             <Text style={styles.subheading}>Upload an image</Text>
@@ -146,7 +175,7 @@ const NewItem = ({ navigation, route }) => {
                             <Text>[Upload image goes here]</Text>
                         </View>
                         
-                        <Separator />
+                        <Divider />
                     </View>
 
 
@@ -184,14 +213,12 @@ const NewItem = ({ navigation, route }) => {
                                 Condition:
                             </Text>
                             <View style={styles.radio_buttons_view}>
-                                <RadioForm
-                                    radio_props={condition_options}
-                                    initial={0}
-                                    onPress={(value) => {
-                                        setCategory(value);
-                                    }}
+                                <RadioGroup 
+                                    radioButtons={condition} 
+                                    onPress={onPressConditionsRadioButton} 
                                 />
                             </View>
+                            
                         </View>
 
                         <View style={{marginBottom: 10}}></View>
@@ -201,29 +228,30 @@ const NewItem = ({ navigation, route }) => {
                                 Category:
                             </Text>
                             <View style={styles.radio_buttons_view}>
-                                <RadioForm
-                                    radio_props={category_options}
-                                    initial={0}
-                                    onPress={(value) => {
-                                        setCondition(value);
-                                    }}
+                                <RadioGroup 
+                                    radioButtons={category} 
+                                    onPress={onPressCategoriesRadioButton} 
                                 />
                             </View>
                         </View>
 
 
                         <View >
+                        {/* <Button
+                            title="Press me"
+                            onPress={() => alert('Simple Button pressed')}
+                        /> */}
                             <Button
                                 title= {"Submit"}
-                                onPress={() => Alert.alert(
-                                'You just posted an item to the marketplace',
-                                'Check out your new listing.',
-                                [
-                                    {text: 'OK', onPress: handlePress()}
-                                ],
-                                { cancelable: false }
-                                )}
-                            />
+                                onPress={() => alert(
+                                 'You just posted an item to the marketplace',
+                                 'Check out your new listing.',
+                                 [
+                                     {text: 'OK', onPress: () => submit()}
+                                 ],
+                                 { cancelable: false }
+                                 )}
+                                ></Button>
                         </View>
 
                     </View>
@@ -269,7 +297,7 @@ const styles = StyleSheet.create({
     radio_buttons_text: {
         marginLeft: 20,
     },
-    separator: {
+    divider: {
         marginVertical: 8,
         borderBottomColor: '#737373',
         borderBottomWidth: 1,
@@ -311,3 +339,36 @@ const styles = StyleSheet.create({
   });
 
 export default NewItem;
+
+/*
+    
+
+    const [chosenOption, setChosenOption] = useState('');
+
+    const condition_options = [
+        { label: 'New', value: 'new' },
+        { label: 'Like new', value: 'like new' },
+        { label: 'Lightly used', value: 'lightly used' },
+        { label: 'Used', value: 'used' }
+    ];
+
+    const category_options = [
+        { label: 'For Fun', value: 'for fun' },
+        { label: 'Vehicle', value: 'vehicle' },
+        { label: 'Apparel', value: 'apparel' },
+        { label: 'Tickets', value: 'tickets' },
+        { label: 'Furniture', value: 'furniture' },
+        { label: 'Electronics', value: 'electronics' },
+        { label: 'Books/ notes', value: 'books/ notes' },
+        { label: 'Miscellaneous', value: 'miscellaneous' },
+    ];
+
+    const handlePress = () => {
+        navigation.navigate('Profile', { username: "girlboss" })
+        // Add the new item to the user's collection of listings
+    }
+
+    const Separator = () => (
+        <View style={styles.separator} />
+    );
+*/
