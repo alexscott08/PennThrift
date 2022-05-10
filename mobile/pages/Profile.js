@@ -99,7 +99,7 @@ const Profile = ({ navigation, route }) => {
                             </View>
 
                             <View style={styles.username_view}>
-                                <Text style={styles.username}>{state.user}</Text>
+                                <Text style={styles.username}>{username}</Text>
                             </View>
 
                             <View style={styles.description_view}>
