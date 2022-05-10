@@ -1,11 +1,14 @@
 import axios from "axios";
-import { Component, useEffect, useState } from "react";
-import { Link, renderMatches } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Header from "../components/Header";
-import { getUserProfile } from "../api/ProfileAPI";
 import placeholder from '../assets/placeholder_user.png';
 import StoreItems from '../components/StoreItems';
-import { useParams } from "react-router-dom";
+import { updateViews, getUserProfile } from "../api/ProfileAPI";
+import { useParams, useNavigate } from "react-router-dom";
+import io from 'socket.io-client';
+
+const socket = io.connect('http://localhost:4000/api/messages')
 
 const  User = props => {
     
@@ -18,16 +21,25 @@ const  User = props => {
     const [interests, setInterests]         = useState([]);
     const [processed, setProcessed]         = useState(false);
     const [items, setItems]                 = useState([]);
+    const [viewer, setViewer]               = useState('');
+    const [viewed, setViewed]               = useState(false);
     const { username } = useParams();
+    const navigate = useNavigate();
 
     const getUserInfo = async () => {
         if (!userInfo) {
+            const res = await axios.get('/api/auth/user');
+            setViewer(res.data);
             if(username)setUserInfo(await getUserProfile(username));
         }
         if(userInfo && !processed){
             processUserInfo(userInfo);
             setProcessed(true);
 
+        }
+        if(viewer && !viewed){
+            setViewed(true)
+            updateViews(username);
         }
     }
 
@@ -42,7 +54,20 @@ const  User = props => {
         setImageDisplay(profile_pic);
 
     }
+    async function processMessageRequest(){
+        if(viewer){
+            
+            const users = [viewer, username];
+            socket.emit('get-open', users);
+            socket.on('message-navigate', id => {
+                navigate( `/profile/messages/${id}`)
+            });
+        }else{
+            navigate('/login')
+        }
+        
 
+    }
     useEffect(() => {
         
         if(items.length === 0 && username){
@@ -50,7 +75,6 @@ const  User = props => {
             axios.get(`/api/profile/items/${username}`)
                     .then( res => {setItems(res.data.items.reverse())})
                     .catch(e => console.log(e))
-            console.log(items)
 
         }
     },[items, bio, interests, imageDisplay, venmo, year])
@@ -92,15 +116,20 @@ const  User = props => {
                                     <div className="font-bold">{venmo}</div>
                                 </div>
                             </div>
-                            
-                            <div className="h-full text-white flex">
-                                <div className="p-3 justify-center cursor-pointer flex w-28 rounded-3xl h-fit font-semibold m-2 bg-[#3289FF]">
-                                    Follow
+                            {
+                                    viewer != username && <div className="h-full text-white flex">
+                                    <div className="p-3 justify-center cursor-pointer flex w-28 rounded-3xl h-fit font-semibold m-2 bg-[#3289FF]">
+                                        Follow
+                                    </div>
+                                    
+                                    <div
+                                        onClick={() => processMessageRequest()} 
+                                        className="p-3 h-fit cursor-pointer justify-center flex rounded-3xl w-28 m-2  font-semibold bg-[#3289FF]">
+                                        Message
+                                    </div>
                                 </div>
-                                <Link to='/profile/messages' className="p-3 h-fit justify-center flex rounded-3xl w-28 m-2  font-semibold bg-[#3289FF]">
-                                    Message
-                                </Link>
-                            </div>
+                            }
+                            
                         </div>
                         <div className="">
                             <StoreItems

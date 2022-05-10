@@ -1,31 +1,31 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, Button } from 'react-native';
+import { Alert, StyleSheet, Text, View, Image, Button } from 'react-native';
 import Form from '../components/Form';
 import axios from 'axios';
 
 const Register = ({ navigation }) => {
     const [error, setError] = React.useState();
-    const address = 'http://localhost:4000/api/register'; 
+    const address = 'http://localhost:4000/api/auth/register'; 
 
     function userDetails(username,password){
+
         const data = {
             'username':username,
             'password':password,
-            'email':username,
         };
 
-
+        
         axios.post(address, data).then(res =>{
             if(res.data === "error"){
                 setError('Username has already been taken');
             }else{
-                localStorage.setItem('username',username)
-                navigation.navigate('/profile', { replace: true })
+                global.LOGGED_IN = true;
+                navigation.navigate('Profile', { replace: true, username: data.username })
             }
-            
         })
         
+    
     }
 
     function reset(){
@@ -35,13 +35,12 @@ const Register = ({ navigation }) => {
     return(
         <View >
             <View >
-                <View ><Text style={styles.title}>Welcome!</Text></View>
-                <View ></View>
-                <Form
-                userDetails={userDetails}
-                reset={reset}
-                error={error}
-                name='Register'/>
+                <Text style={styles.title}>Welcome!</Text>
+                    <Form
+                        userDetails={userDetails}
+                        reset={reset}
+                        error={error}
+                        name='Register'/>
             </View>
         </View>
         
@@ -56,7 +55,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
     },
     title: {
-        marginTop: 75,
+        marginTop: 80,
         paddingVertical: 10,
         textAlign: "center",
         fontSize: 30,

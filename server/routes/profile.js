@@ -17,14 +17,14 @@ router.route('/:username').get((req, res) => {
     .catch(err => res.status(400).json('Error! ' + err))
 });
 
-// delete profile/user by id
+// delete profile/user by username
 router.route('/delete/:username').delete((req, res) => {
     User.deleteOne({ username: req.params.username })
         .then(success => res.json('Success! User deleted.'))
         .catch(err => res.status(400).json('Error! ' + err))
 });
 
-// edit profile/user info by id
+// edit profile/user info by username
 router.route('/edit/:username').put((req, res) => {
     User.findOneAndUpdate({username: req.params.username }, req.body)
         .then(user => res.json('Success! User updated.'))
@@ -47,15 +47,65 @@ router.route('/item/new').post((req, res) => {
     
 })
 
+router.route('/favourites/update').post(( req, res) => {
+    const { itemID, username } = req.body;
+    User.findOne({username:username}).then( user => {
+        Item.findOne({_id:itemID}).then( item => {
+            const remove = user.favourites.includes(itemID);
+            if(remove){
+                User.findOneAndUpdate(
+                    { username:username },
+                    { $pullAll: {favourites:[{_id:itemID}] }}
+                ).exec();
+
+            }else{
+                User.findOneAndUpdate(
+                    { username:username },
+                    { $addToSet: {favourites:item }}
+                ).exec();
+
+            }
+            res.json(user.favourites)
+        } )
+    })
+});
+
+router.route('/favourites').post( (req, res) => {
+    const { username } = req.body;
+    User.findOne({username:username}).populate('favourites').then( user => {
+        res.json(user.favourites)
+    });
+})
+
+// get chats of user
+router.route('/chats/:username').get((req, res) => {
+    try{
+        User.findOne({ username: req.params.username }, {username: 1, chats: 1})
+        .populate({
+            path:'chats',
+            options:{sort:{ updatedAt: -1 }}
+         }).exec((err, user) => {
+            res.json(user.chats);
+        })
+    }catch{
+
+    }
+    
+});
+
 
 
 // get items of user
 router.route('/items/:username').get((req, res) => {
-     User.findOne({ username: req.params.username }, {username: 1, items: 1})
-    .populate('items').exec((err, user) => {
-        res.json(user);
-    })
-    // .catch(err => res.status(400).json('Error! ' + err))
+    try{
+        User.findOne({ username: req.params.username }, {username: 1, items: 1})
+       .populate('items').exec((err, user) => {
+           res.json(user);
+       })
+
+    }catch{
+
+    }
 });
 
 module.exports = router;

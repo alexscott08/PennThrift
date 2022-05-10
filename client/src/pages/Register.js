@@ -21,7 +21,6 @@ const Register = () =>{
                 navigate('/profile', { replace: true })
                 global.LOGGED_IN = true;
             }
-            
         })
         
     }

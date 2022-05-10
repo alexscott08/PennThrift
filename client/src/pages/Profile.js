@@ -133,9 +133,9 @@ export default class Profile extends Component {
                                 </div>
                                 
                                 <div className="h-ffull flex">
-                                    <div className="p-1 border border-gray-400 h-fit font-semibold m-2 bg-gray-200">
+                                    <Link to='/profile/analytics' className="p-1 border border-gray-400 h-fit font-semibold m-2 bg-gray-200">
                                         View Analytics
-                                    </div>
+                                    </Link>
                                     <Link to='/profile/edit' className="p-1 border border-gray-400 h-fit  m-2 font-semibold bg-gray-200">
                                         Edit Profile
                                     </Link>

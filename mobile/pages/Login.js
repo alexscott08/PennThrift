@@ -1,18 +1,14 @@
 import React from 'react';
-import { StyleSheet, Text, View, } from 'react-native';
-// import { NavigationContainer } from '@react-navigation/native';
+import { Alert, StyleSheet, Text, View, } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import Form from '../components/Form';
-
-// require('../server/models/AuthSchema')
-// server/models/AuthSchema.js
-
-//const address = 'http://localhost:4000/api/login'; 
-
+import axios from 'axios';
+//import { useNavigate } from 'react-router';
 
 function Login({ navigation }) {
     const [error, setError] = React.useState();
-    const address = 'http://localhost:4000/api/login'; 
-    
+    const address = 'http://localhost:4000/api/auth/login'; 
+
     // function that sets user details
     function userDetails(username,password) {
         const data = {
@@ -21,13 +17,19 @@ function Login({ navigation }) {
             'email':username,
         };
 
-        // axios.post(address, data).then(res =>{
-        //    localStorage.setItem('username',username)
-        //    navigate('/profile', { replace: true })
-        // }).catch(err =>{
-        //    return err.message.split(" ").pop() == '401' ? 
-        //    setError('We don’t recognize that username and password. Please try again.') : null
-        // })
+        
+        axios.post(address, data).then(res =>{
+            if(res.data === 'success'){
+                global.LOGGED_IN = true;
+                navigation.navigate('Profile', { replace: true, username: data.username })
+            }
+        }).catch(err =>{
+            return err.message.split(" ").pop() == '401' ? 
+            setError('We don’t recognize that username and password. Please try again.') : null
+        })
+        
+
+        // navigation.navigate('Profile', { replace: true, username: data.username })
     }
 
     function reset() {
@@ -37,13 +39,12 @@ function Login({ navigation }) {
     return(
         <View>
             <View>
-                <View><Text style={styles.title}>Welcome back!</Text></View>
-                <View className='w-full my-10 h-[1px] bg-[gray]'></View>
-                <Form
-                    userDetails={userDetails}
-                    reset={reset}
-                    error={error}
-                    name='Login'/>
+                <Text style={styles.title}>Welcome back!</Text>
+                    <Form
+                        userDetails={userDetails}
+                        reset={reset}
+                        error={error}
+                        name='Login'/>
             </View>
         </View>
     )
@@ -57,8 +58,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
     },
     title: {
-        marginTop: 50,
-        marginBottom: 25,
+        marginTop: 80,
         paddingVertical: 10,
         textAlign: "center",
         fontSize: 30,

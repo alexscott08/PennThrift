@@ -1,200 +1,211 @@
 import React from 'react';
 import axios from "axios";
-import { Component, useEffect, useState } from "react";
 import Header from "../components/Header";
 import ProfileListings from "../components/ProfileListings";
-import { Alert, StyleSheet, Text, View, Image, Button, TouchableHighlight } from 'react-native';
+import { getUserProfile } from "../ProfileAPI.js";
+import { Alert, StyleSheet, Text, View, Image, Pressable, Button, ScrollView, TouchableHighlight } from 'react-native';
 import { Linking } from 'react-native';
-import { Dimensions } from 'react-native';
+import placeholder from '../assets/placeholder_user.png'
+import { useState } from 'react';
 
-var window_width = Dimensions.get('window').width; 
-
-
-const Profile = ({ navigation }) => {
-    /*
-    state = {
-        items:[],
-        user: global.USER
-    }
+const Profile = ({ navigation, route }) => {
     
-    componentDidMount(){
-        if(!this.state.user){
-            axios.get('/api/auth/user')
-                 .then( res => {
-                    this.setState({ user: res.data})
-                });
-        }
-        if(this.state.items.length === 0 && this.state.user){
-    
-            axios.get('/api/profile/items/'+ this.state.user)
-                    .then( res => {this.setState({items: res.data.items.reverse()})})
-                    .catch(e => console.log(e))
+    const { replace, username } = route.params;
+    const [state, setState] = useState({});
+
+    const processUserInfo = (info) => {
+        const {class_year, bio, interests, venmo, profile_pic } = info;
+        setState(state => ({
+            ...state,
+            bio: bio,
+            year: class_year,
+            venmo: venmo,
+            profile_pic: profile_pic
+        }))
+        if (interests) {
+            setState(state => ({
+               ...state,
+               interests: interests, 
+            }))
         }
     }
-    componentDidUpdate(){
-        if(!this.state.user){
-            axios.get('/api/auth/user')
-                 .then( res => {
-                    this.setState({ user: res.data})
-                });
+
+    React.useEffect(() => {
+        const user = username;
+        const items = state.items || [];
+        const processed = state.processed || false;
+        const userInfo = state.userInfo || '';
+
+        if(items.length === 0 && user){
+
+            axios.get(`http://localhost:4000/api/profile/items/${user}`)
+            .then( res => {
+                setState(state => ({
+                    ...state,
+                    items: res.data.items.reverse(),
+                }))
+            })
+            .catch(e => console.log(e))
+
+
         }
-        if(this.state.items.length === 0 && this.state.user){
+        
+        if (user) {
+            getUserProfile(user).then(info => setState(state => ({
+                ...state,
+                userInfo: info,
+            })))
+        }
+        if(user && userInfo && !processed){
+            processUserInfo(userInfo);
+            setState(state => ({
+                ...state,
+                processed: true
+            }))
+        }
+    }, [state]);
+
+    React.useEffect(() => {
+        return () => {
+          setState({});
+        };
+      }, []);
+
     
-            axios.get('/api/profile/items/'+ this.state.user)
-                    .then( res => {this.setState({items: res.data.items.reverse()})})
-                    .catch(e => console.log(e))
+    const refresh = () =>{
+        const user = state.user || '';
 
-        }
-
-    }
-
-    refresh = () =>{
-        const user = this.state.user;
         if(user){
-            axios.get('/api/profile/items/'+ user)
-                    .then( res => {this.setState({items: res.data.items.reverse()})})
-                    .catch(e => console.log(e))
-
+            axios.get('http://localhost:4000/api/profile/items/'+ user)
+            .then(res => setState(state => ({
+                ...state,
+                items: res.data.items.reverse(),
+            })))
+            .catch(e => console.log(e))
         }
     }
-    */
 
+    const interests = state.interests || [];
 
     return(
         <View>
+        <Header navigation={navigation}/>
+            <ScrollView>
                 <View>
                     <View>
-                        <View>
+                        <View style={styles.bio_box}>
                             <View style={{justifyContent:'center', alignItems: 'center', flexDirection: 'column'}}>
-                                <Image style={styles.profile_pic} source={require('../assets/placeholder_user.png')}/>
+                                <Image style={styles.profile_pic} source={state.profile_pic || placeholder}/>
                             </View>
 
                             <View style={styles.username_view}>
-                                <Text style={styles.username}>this.state.user</Text>
+                                <Text style={styles.username}>{state.user}</Text>
                             </View>
 
-                            <View style={styles.bio_view}>
-                                <Text style={styles.bio_text}>
-                                    Living life and tryna make money
+                            <View style={styles.description_view}>
+                                <Text style={styles.description_text}>
+                                    {state.bio}
                                 </Text>
                             </View>
 
-                            <View style={{marginBottom: 20}}></View>
+                            <View style={{marginBottom: 10}}></View>
                             
                             <View style={{flexDirection:'row', alignItems:'center'}}>
                         
                                 <Image style={{marginLeft: 30, marginRight: 15, width:25, height:30}} source={require('../assets/penn_logo.png')}/>
 
                                 <Text style={styles.title_text}>Class of </Text>
-                                <Text style={styles.title_text}>2023</Text>
+                                <Text style={styles.title_text}>{state.year}</Text>
                             </View>
 
                             <View style={{marginBottom: 20}}></View>
 
-
                             <View style={{flexDirection:'row', alignItems:'center'}}>
                                 <Image style={{marginLeft: 25, marginRight: 15, width:30, height:30}} source={require('../assets/heart_icon.png')}/>
                                 <Text style={styles.title_text}>Interests: </Text>
-                                    <Text>Clothing, Furniture</Text>
+                                    <Text>{interests.map((interest) => interest+ ", ")}</Text>
                             </View>
 
-                        </View>
+                            <View style={{marginBottom: 20}}></View>
 
-                        <View style={{marginBottom: 20}}></View>
-
-                        <View >
-                            <View >
+                            <View>
                                 <View>
-                                    <View>
-                                        <View style={{flexDirection:'row', alignItems:'center'}}>
-                                            <Image style={{marginLeft: 15}} source={require('../assets/vimeo.png')}/>
-                                            <Text style={styles.title_text}>@Thrift_God.69</Text>
-                                        </View>
+                                    <View style={{flexDirection:'row', alignItems:'center'}}>
+                                        <Image style={{marginLeft: 30, marginRight: 15, width:25, height:30}} source={require('../assets/vimeo.png')}/>
+                                        <Text style={styles.venmo_text}>{state.venmo}</Text>
                                     </View>
                                 </View>
-
-                                <View style={{marginBottom: 20}}></View>
-                                
-                                <View >
-                                    <Text >
-                                        View Analytics
-                                    </Text>
-
-                                    <Text style={{color: 'blue'}}
-                                    onPress={() => Linking.openURL('http://google.com')}>
-                                        Google
-                                    </Text>
-                                    <TouchableHighlight
-                                        onPress={() => 
-                                            navigation.navigate('EditProfile')}>
-                                            <View style={styles.login}>
-                                            <Text style={{fontSize: 16, fontWeight: "bold", color: "white"}}>EditProfile</Text>
-                                            </View>
-                                    </TouchableHighlight>
-
-                                </View>
                             </View>
 
-                            <Text>
-                                Your listings:
-                            </Text>
+                            <View style={{marginBottom: 10}}></View>
+                        </View>
+
+                        <View style={{marginBottom: 10}}></View>
+
+                        <View>
+
+                        <View style={{flexDirection:'row', alignItems:'center'}}>
+
+                            <View style={styles.button}>
+                                <Pressable
+                                    onPress={() => 
+                                        navigation.navigate('Analytics')}
+                                    activeOpacity={0.6}
+                                    underlayColor="#DDDDDD">
+                                    <View style={styles.analytics_button}>
+                                        <Text style={{fontSize: 20, fontWeight: "bold", color: "white"}}>View Analytics</Text>
+                                    </View>
+                                </Pressable>
+                            </View>
+
+                            <View style={styles.button}>
+                                <Pressable
+                                    onPress={() => 
+                                        navigation.navigate('EditProfile', { replace: true, username: username })}
+                                    activeOpacity={0.6}
+                                    underlayColor="#DDDDDD">
+                                    <View style={styles.analytics_button}>
+                                        <Text style={{fontSize: 20, fontWeight: "bold", color: "white"}}>Edit Profile</Text>
+                                    </View>
+                                </Pressable>
+                            </View>
+
+                            <View style={styles.button}>
+                                <Pressable
+                                    onPress={() => 
+                                        navigation.navigate('NewItem')}>
+                                    <View style={styles.new_item_button}>
+                                        <Text style={{fontSize: 20, fontWeight: "bold", color: "white"}}>Add New Item</Text>
+                                    </View>
+                                </Pressable>
+                            </View>
+                        </View>
                             
+                        <View>
+                            <ProfileListings
+                                refresh={refresh}
+                                data={state.items}
+                                user={username}
+                                navigation={navigation}
+                                />
                         </View>
                     </View>
                 </View>
-        </View>
+            </View>
+            
+            <View style={{marginBottom: 150}}></View>
+        </ScrollView>
+    </View>
     )
 }
 
-export default Profile;
-
-
-//////////////////////////////////////////////////////////////////
-
-/*
-const Register = ({ navigation }) => {
-    const [error, setError] = React.useState();
-    const address = 'http://localhost:4000/api/register'; 
-
-    function userDetails(username,password){
-        const data = {
-            'username':username,
-            'password':password,
-            'email':username,
-        };
-
-        axios.post(address, data).then(res =>{
-            if(res.data === "error"){
-                setError('Username has already been taken');
-            }else{
-                localStorage.setItem('username',username)
-                navigation.navigate('/profile', { replace: true })
-            }
-        })
-    }
-
-    function reset(){
-        setError(null)
-    }
-
-    return(
-        <View >
-            <View >
-                <View ><Text style={styles.title}>Welcome!</Text></View>
-                <View ></View>
-                <Form
-                userDetails={userDetails}
-                reset={reset}
-                error={error}
-                name='Register'/>
-            </View>
-        </View>
-    )
-};
-
-*/
-
 const styles = StyleSheet.create({
+    bio_box: {
+        borderWidth:3,
+        padding:10,
+        margin: 10,
+        // backgroundColor:"#ababab"
+    },
     container: {
       flex: 1,
       backgroundColor: '#fff',
@@ -205,30 +216,35 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: "bold",
     },
+    venmo_text: {
+        fontSize: 20,
+        color: "#0645AD", // link color
+    },
     title_view: {
         paddingLeft: 25,
     },
-    bio_text: {
+    description_text: {
         color: "black",
         textShadowRadius: 1,
         fontSize: 20,
         fontStyle: 'italic'
     },
-    bio_view: {
+    description_view: {
         color: "black",
         textDecorationColor: "yellow",
         textShadowColor: "red",
         textShadowRadius: 1,
-        margin: 24,
         alignItems: 'center',
         justifyContent: 'center',
+        marginTop:15,
+        marginBottom:20
     },
     profile_pic: {
-        //width: .5 * window_width,  //its same to '50%' of device width
         resizeMode: 'contain',
         height: 200,
-        marginTop: 30,
-        marginBottom: 30
+        width: 200,
+        marginTop: 15,
+        marginBottom: 15
     },
     username: {
         fontSize: 35,
@@ -238,5 +254,35 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    button: {
+        alignItems: "center",
+        flex: 1,
+        justifyContent: "center",
+        paddingHorizontal: 10,
+        marginBottom: 20,
+      },
+    analytics_button: {
+        textAlign: "center",
+        fontSize: 20,
+        fontWeight: "bold",
+        height: 40,
+        width:160,
+        borderRadius:10,
+        backgroundColor : "#0067b0",
+        justifyContent: "center",
+        alignItems: "center",
+      },
+    new_item_button: {
+        textAlign: "center",
+        fontSize: 20,
+        fontWeight: "bold",
+        height: 40,
+        width:160,
+        borderRadius:10,
+        backgroundColor : "#3f9669",
+        justifyContent: "center",
+        alignItems: "center",
+      }
   });
 
+export default Profile;

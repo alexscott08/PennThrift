@@ -9,9 +9,9 @@ const storage = new GridFsStorage({
     url:tempDBAccess,
     options: { useNewUrlParser: true, useUnifiedTopology: true },
     file: (req, file) => {
-        const match = ["image/png","image/gif", "image/jpeg"];
+        const match = [];
 
-        if (match.indexOf(file.mimetype) === -1) {
+        if (match.indexOf(file.mimetype) != -1) {
             const filename = `${Date.now()}-pennthrift-${file.originalname}`;
             return filename;
         }

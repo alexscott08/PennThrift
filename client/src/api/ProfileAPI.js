@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const url = 'http://localhost:4000/api/profile/';
-
 export const getAllUserProfiles = async () => {
     try {
         const res = await axios.get(url);
@@ -62,4 +61,49 @@ export const getUserItems = async (username) => {
     // axios.get(url, {params: {username}})
     // .then(res => res.data)
     // .catch(err => console.log(err))
+}
+
+
+
+
+export const updateViews = async (username) =>{
+    try{
+        axios.get(`/api/analytics/profile/views/${username}`)
+            .then( res =>{
+                let views = res.data.profile_views;
+                const date = new Date();
+                const month = date.getMonth();
+                views = views.map( (v, i) =>  {return(i == month ? v = v + 1 : v = v)} );
+                axios.put(`/api/analytics/profile/update/${username}`,{profile_views:views})
+               
+            })
+    }catch{
+
+    }
+}
+
+export const getUserChats = async (username) => {
+    try{
+        const res = await axios.get(`/api/profile/chats/${username}`);
+        return res.data
+    }catch{
+
+    }
+}
+
+export const getUserImage = async(username) => {
+    try {
+        const res = await axios.get(url + username)
+        return res.data.profile_pic;
+    } catch (err) {}
+}
+
+export const getUserFavourites = async(username) => {
+    if(username){
+        try{
+            const res = await axios.post('/api/profile/favourites',{username:username});
+            return res.data;
+        }catch(err){}
+
+    }
 }
