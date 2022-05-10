@@ -1,18 +1,14 @@
 import axios from 'axios';
 import { Component } from 'react'
 import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 
-
-
-
-
-class StoreItems extends Component{
+export default class StoreItems extends Component{
 
     state = {
         items:[],
         favourites:[],
-        updatedItems:[],
+        updatedItems:[]
 
     }
 
@@ -20,7 +16,6 @@ class StoreItems extends Component{
     constructor(props){
         super(props);
         this.setState({items:[...props.data]}) 
-        this.setState({favourites:[...props.favourites] });
     }
     componentDidMount(){
         const items = this.props.data;
@@ -33,10 +28,6 @@ class StoreItems extends Component{
         const items = this.state.items;
         if(items != this.props.data ){
             this.setState({items: this.props.data})
-         }
-         const favourites = this.state.favourites;
-         if(favourites != this.props.favourites){
-             this.setState({favourites:this.props.favourites})
          }
     }
     
@@ -52,18 +43,15 @@ class StoreItems extends Component{
             return require('../assets/favourite.png')
         }
 
-        const update = async(id) =>{
+        const update = (id) =>{
             let favourites = this.state.favourites;
-            const user = this.props.user;
-            
-            if(user){
-                
-                await axios.post('/api/profile/favourites/update',{itemID:id, username:user})
-                this.props.refresh()
-
-            }else{
-                this.props.navigate('/login')
+            if(favourites.includes(id)){
+               favourites =  favourites.filter( (item) =>{
+                       return item !== id;
+                });
+               return this.setState({favourites:favourites})
             }
+           return this.setState({favourites:[...this.state.favourites,id]})
         }
 
         
@@ -71,11 +59,11 @@ class StoreItems extends Component{
         
 
         return(
-            <div className='grid justify-center mt-20 sm:grid-cols-2 lg:grid-cols-3 gap-y-5 gap-2'>
+            <div data-testid="storeitems" className='grid justify-center mt-20 sm:grid-cols-2 lg:grid-cols-3 gap-y-5 gap-2'>
                 {
                     this.state.items.map(item => {
                         return(
-                            <div key={item._id}  className="border-2 w-56 p-5 border-[#368481] w-fit">
+                            <div data-testid="itemid" key={item._id}  className="border-2 w-56 p-5 border-[#368481] w-fit">
                                 <Link to={`/store/item/${item._id}`}>
                                     <img src={item.image} className='w-full border-[#368481] rounded-lg border-2 h-36'/>
 
@@ -106,13 +94,3 @@ class StoreItems extends Component{
         )
     }
 }
-
-const withNavigation = (Component) =>{
-    
-    return function WrappedComponent(props) {
-        const navigate = useNavigate();
-        return <Component {...props} navigate={navigate} />;
-      }
-}
-
-export default withNavigation(StoreItems);
