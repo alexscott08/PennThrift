@@ -3,33 +3,68 @@ import { Alert, StyleSheet, Text, View, } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import Form from '../components/Form';
 import axios from 'axios';
+import { getUserProfile, editUserProfile } from "../../client/src/api/ProfileAPI";
+
+
 //import { useNavigate } from 'react-router';
 
 function Login({ navigation }) {
     const [error, setError] = React.useState();
     const address = 'http://localhost:4000/api/auth/login'; 
 
-    // function that sets user details
-    function userDetails(username,password) {
+
+    function userDetails(username,password){
         const data = {
             'username':username,
             'password':password,
             'email':username,
         };
 
-        
         axios.post(address, data).then(res =>{
-            if(res.data === 'success'){
-                global.LOGGED_IN = true;
-                navigation.navigate('Profile', { replace: true, username: data.username })
+            if (res.status === 200) {
+                editUserProfile(username, { last_login: res.time }).then(res => {
+                    if (res === 'Success! User updated.') {
+                        global.LOGGED_IN = true;
+                        navigate('/profile', { replace: true })
+                    }
+                });
+            } else if (res.status === 202) {
+                const currentTimestamp = moment().unix(); // in seconds
+                const currentDatetime = moment(currentTimestamp * 1000).format(
+                        'YYYY-MM-DD HH:mm:ss'
+                );
+                if (Math.abs(new Date(currentDatetime) - new Date(res.data.user.last_login)) > 120000) { //2 minutes
+                    editUserProfile(username, { locked_out: false }).then(res => {
+                        if (res === 'Success! User updated.') {
+                            return setError('You have now regained login access. Please try again to login to your account.');
+                        }
+                    });
+                } else {
+                    editUserProfile(username, { locked_out: true }).then(res => {
+                        if (res === 'Success! User updated.') {
+                            return setError('You have been locked out for too many failed attempts. Please try again later.')
+                        }
+                    });
+                }
             }
-        }).catch(err =>{
-            return err.message.split(" ").pop() == '401' ? 
-            setError('We don’t recognize that username and password. Please try again.') : null
-        })
-        
-
-        // navigation.navigate('Profile', { replace: true, username: data.username })
+        }).catch(err => {
+            if (err.message.split(" ").pop() == '401' || err.message.split(" ").pop() == '429') {
+                getUserProfile(username).then(res => {
+                    if (res != null) {
+                        editUserProfile(username, { locked_out: true }).then(res => {
+                            console.log(res)
+                            if (res === 'Success! User updated.') {
+                                return setError('You have been locked out for too many failed attempts. Please try again later.')
+                            } else {
+                                return null;
+                            }
+                        });
+                    } else {
+                        return setError('We don’t recognize that username and password. Please try again.')
+                    }
+                });   
+            }
+        });
     }
 
     function reset() {
