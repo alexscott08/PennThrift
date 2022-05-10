@@ -2,15 +2,20 @@ import Header from "../components/Header"
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import React from 'react';
-import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { editUserProfile, getUserProfile } from "../ProfileAPI.js";
+import { editUserProfile, getUserProfile } from "../../client/src/api/ProfileAPI";
 import placeholder from '../assets/placeholder_user.png';
 import { Alert, StyleSheet, Text, TextInput, View, Image, Pressable, Button, ScrollView, TouchableHighlight } from 'react-native';
+import RadioForm from 'react-native-simple-radio-button';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
+
 
 //import { useNavigate } from "react-router-dom";
 
 // TODO: pass user info through props instead of axios
 const EditProfile = ({navigation, route}) => {
+
+    /*
+    
     const { replace, username } = route.params;
 
     const [bio, setBio]                     = useState('Edit description');
@@ -28,7 +33,7 @@ const EditProfile = ({navigation, route}) => {
 
     const getUserInfo = async () => {
         // if (!userInfo) {
-        //     const res = await axios.get(`http://localhost:4000/api/auth/${username}`);
+        //     const res = await axios.get(http://localhost:4000/api/auth/${username});
         //     setUser(res.data);
         //     if(user)setUserInfo(await getUserProfile(user));
         // }
@@ -165,14 +170,37 @@ const EditProfile = ({navigation, route}) => {
         setLoading(false);
         return;
     }
+    */
 
-   
+
+    const imageDisplay = "https://asia.olympus-imaging.com/content/000107506.jpg";
+    const username = "toucan";
+    const bio = "I am a toucan";
+    const year = 2023;
+    const interests = [ "a", "b", "c" ];
+    const venmo = "toucan";
+
+    const [classYear, setClassYear] = useState('');
+
+    const class_options = [
+        { label: '2022', value: '2022' },
+        { label: '2023', value: '2023' },
+        { label: '2024', value: '2024' },
+        { label: '2025', value: '2025' }
+    ];
+
+    const handleSubmit = () => {
+        // Alert.alert("You updated your profile")
+        navigation.navigate('Profile');
+    }
+
     return(
         <ScrollView>
             <Header navigation={navigation}/>
-            <View style={styles.bio_box}>
+                <View style={styles.bio_box}>
+                
                             <View style={{justifyContent:'center', alignItems: 'center', flexDirection: 'column'}}>
-                                <Image style={styles.profile_pic} source={imageDisplay || placeholder}/>
+                                <Image style={styles.profile_pic} source={imageDisplay /*|| placeholder*/}/>
                             </View>
 
                             <View style={styles.username_view}>
@@ -222,22 +250,81 @@ const EditProfile = ({navigation, route}) => {
 
 
                     <View>
+                        {/*
                         <View style={{marginLeft: 15, marginBottom: 10}}>
                             <Text style={styles.search_heading}>
                                 <Text style={{color:"#013587"}}> {username} </Text> 's profile
                             </Text>
                         </View>
+                        
                         <View style={styles.text_box_view}>
                             <TextInput placeholder="Search" style={styles.text_box}/>
+                        </View>
+                        */}
+                    </View>
+
+                    <View style={{marginBottom: 15}}></View>
+
+                    <View style={styles.description_view}>
+                        <View style={{marginLeft: 15, marginBottom: 10}}>
+                            <Text style={styles.search_heading}>
+                                Name
+                            </Text>
+                        </View>
+                        <View style={styles.text_box_view}>
+                            <TextInput placeholder="Change your name" style={styles.text_box}/>
                         </View>
                     </View>
 
                     <View style={{marginBottom: 15}}></View>
 
+                    <View style={styles.description_view}>
+                        <View style={{marginLeft: 15, marginBottom: 10}}>
+                            <Text style={styles.search_heading}>
+                                Venmo
+                            </Text>
+                        </View>
+                        <View style={styles.text_box_view}>
+                            <TextInput placeholder="Change your venmo" style={styles.text_box}/>
+                        </View>
+                    </View>
+
+                    <View style={{marginBottom: 15}}></View>
+
+                    <View style={styles.description_view}>
+                        <View style={{marginLeft: 15, marginBottom: 10}}>
+                            <Text style={styles.search_heading}>
+                                Description
+                            </Text>
+                        </View>
+                        <View style={styles.text_box_view}>
+                            <TextInput placeholder="Change your description" style={styles.text_box}/>
+                        </View>
+                    </View>
+
+                    <View style={{marginBottom: 15}}></View>
+
+
                     <View style={{marginBottom: 20}}>
                         <View style={{marginLeft: 15, marginBottom: 10}}>
                             <Text style={styles.search_heading}>
-                                Search by<Text style={{color:"#013587"}}> category:</Text>
+                                Class
+                            </Text>
+                        </View>
+                            <View style={{marginLeft: 20}}>
+                                <RadioForm
+                                    radio_props={class_options}
+                                    initial={0}
+                                    onPress={(value) => {
+                                        setClassYear(value);
+                                    }}
+                                />
+                        </View>
+                    </View>
+                    <View style={{marginBottom: 20}}>
+                        <View style={{marginLeft: 15, marginBottom: 10}}>
+                            <Text style={styles.search_heading}>
+                                Interests
                             </Text>
                         </View>
                         <View style={{marginLeft: 20}}>
@@ -299,9 +386,20 @@ const EditProfile = ({navigation, route}) => {
                         </View>
                     </View>
                 </View>
+
+                <View style={{marginBottom: 15}}></View>
+
+                <View >
+                    <Button
+                        title= {"Update Your Profile"}
+                        onPress={() => handleSubmit }
+                    />
+                </View>
             </View>
+
+            <View style={{marginBottom: 25}}></View>
         </ScrollView>
-        )
+    )
 }
 
 const styles = StyleSheet.create({
@@ -322,8 +420,6 @@ const styles = StyleSheet.create({
     text_box: {
         margin: 5,
         width: 200,
-        justifyContent: 'center',
-        alignItems: 'center',
     },
     text_box_view: {
         backgroundColor:"#fff",
