@@ -2,78 +2,90 @@ import React from 'react';
 import axios from "axios";
 import Header from "../components/Header";
 import ProfileListings from "../components/ProfileListings";
+import { getUserProfile } from "../ProfileAPI.js";
 import { Alert, StyleSheet, Text, View, Image, Pressable, Button, ScrollView, TouchableHighlight } from 'react-native';
 import { Linking } from 'react-native';
 import placeholder from '../assets/placeholder_user.png'
+import { useState } from 'react';
 
 const Profile = ({ navigation, route }) => {
-
-    const { replace, username } = route.params;
-
     
-    const state = {
-        items:[],
-        user:global.USER,
-        bio:'',
-        profile_pic:'',
-        venmo:'',
-        year:'',
-        processed:false,
-        userInfo:'',
-        interests:[],
-    }
+    const { replace, username } = route.params;
+    const [state, setState] = useState({});
 
     const processUserInfo = (info) => {
         const {class_year, bio, interests, venmo, profile_pic } = info;
-        this.setState({bio:bio, year:class_year, venmo:venmo, profile_pic:profile_pic});
-        if(interests)this.setState({interests:interests});
+        setState(state => ({
+            ...state,
+            bio: bio,
+            year: class_year,
+            venmo: venmo,
+            profile_pic: profile_pic
+        }))
+        if (interests) {
+            setState(state => ({
+               ...state,
+               interests: interests, 
+            }))
+        }
     }
 
     React.useEffect(() => {
-        const user = state.user;
-        const items = state.items;
-        const processed = state.processed;
-        const userInfo = state.userInfo;
-        if(!user){
-            //TODO: this call is not working because 
-            //server/auth.js in router.get('/user')
-            //req.session.user is not working (returns null)
-            axios.get('http://localhost:4000/api/auth/user')
-                 .then( res => {
-                    this.setState({ user: res.data});
-            });
-        }
+        const user = username;
+        const items = state.items || [];
+        const processed = state.processed || false;
+        const userInfo = state.userInfo || '';
+
         if(items.length === 0 && user){
-    
+
             axios.get(`http://localhost:4000/api/profile/items/${user}`)
-                    .then( res => {this.setState({items: res.data.items.reverse()})})
-                    .catch(e => console.log(e))
+            .then( res => {
+                setState(state => ({
+                    ...state,
+                    items: res.data.items.reverse(),
+                }))
+            })
+            .catch(e => console.log(e))
+
 
         }
         
-        if(user)getUserProfile(user).then(info => this.setState({userInfo:info}))
+        if (user) {
+            getUserProfile(user).then(info => setState(state => ({
+                ...state,
+                userInfo: info,
+            })))
+        }
         if(user && userInfo && !processed){
             processUserInfo(userInfo);
-            this.setState({processed:true})
+            setState(state => ({
+                ...state,
+                processed: true
+            }))
         }
-    })
+    }, [state]);
 
+    React.useEffect(() => {
+        return () => {
+          setState({});
+        };
+      }, []);
 
     
     const refresh = () =>{
-        const user = state.user;
+        const user = state.user || '';
+
         if(user){
             axios.get('http://localhost:4000/api/profile/items/'+ user)
-                    .then( res => {this.setState({items: res.data.items.reverse()})})
-                    .catch(e => console.log(e))
+            .then(res => setState(state => ({
+                ...state,
+                items: res.data.items.reverse(),
+            })))
+            .catch(e => console.log(e))
         }
     }
-    
 
-    const description = "Living life and tryna make money"
-    const class_year = 2022
-    const interests = ["Clothing", "Furniture", "Books"]
-    const venmo_handle = "@Thrift_God.69"
+    const interests = state.interests || [];
 
     return(
         <View>
@@ -119,7 +131,7 @@ const Profile = ({ navigation, route }) => {
                             <View>
                                 <View>
                                     <View style={{flexDirection:'row', alignItems:'center'}}>
-                                        <Image style={{marginLeft: 15, }} source={require('../assets/vimeo.png')}/>
+                                        <Image style={{marginLeft: 30, marginRight: 15, width:25, height:30}} source={require('../assets/vimeo.png')}/>
                                         <Text style={styles.venmo_text}>{state.venmo}</Text>
                                     </View>
                                 </View>
@@ -149,6 +161,18 @@ const Profile = ({ navigation, route }) => {
                             <View style={styles.button}>
                                 <Pressable
                                     onPress={() => 
+                                        navigation.navigate('EditProfile', { replace: true, username: username })}
+                                    activeOpacity={0.6}
+                                    underlayColor="#DDDDDD">
+                                    <View style={styles.analytics_button}>
+                                        <Text style={{fontSize: 20, fontWeight: "bold", color: "white"}}>Edit Profile</Text>
+                                    </View>
+                                </Pressable>
+                            </View>
+
+                            <View style={styles.button}>
+                                <Pressable
+                                    onPress={() => 
                                         navigation.navigate('NewItem')}>
                                     <View style={styles.new_item_button}>
                                         <Text style={{fontSize: 20, fontWeight: "bold", color: "white"}}>Add New Item</Text>
@@ -160,7 +184,7 @@ const Profile = ({ navigation, route }) => {
                         <View>
                             <ProfileListings
                                 refresh={refresh}
-                                //data={state.items}
+                                data={state.items}
                                 user={username}
                                 navigation={navigation}
                                 />
@@ -218,6 +242,7 @@ const styles = StyleSheet.create({
     profile_pic: {
         resizeMode: 'contain',
         height: 200,
+        width: 200,
         marginTop: 15,
         marginBottom: 15
     },

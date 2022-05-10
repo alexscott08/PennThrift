@@ -33,18 +33,17 @@ const ProfileListings = (props) => {
         price:"70,000"
     };
 
-    const items = [item1, item2, item3];
+    const items = props.data || [];
 
     const navigation = props.navigation;
 
     return(
         <View >
             {
-            items.map((item) => {
+            items.map((item, index) => {
                 return(
-                    <View key={item.id} style={styles.box}>
+                    <View key={`${item.name} ${index}`} style={styles.box}>
                         <View>
-                          
                           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                             <Text style={styles.category}>{item.category.toUpperCase()}</Text>
                             <TouchableOpacity

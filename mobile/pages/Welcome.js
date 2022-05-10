@@ -60,16 +60,26 @@ const Welcome = ({ navigation }) =>{
                                 onPress={() => 
                                     navigation.navigate('User')}>
                                 <View style={styles.test_button}>
-                                  <Text style={{fontSize: 16, fontWeight: "bold", color: "white"}}>Test User</Text>
+                                  <Text style={{fontSize: 16, fontWeight: "bold", color: "white"}}>Test User / StoreItems</Text>
                                 </View>
                             </TouchableHighlight>
                         </View>
 
+                        <View style={{marginBottom: 40}}></View>
+
+                  <View style={styles.button}>
+                        <TouchableHighlight
+                            onPress={() => 
+                                navigation.navigate('Item')}>
+                            <View style={styles.test_button}>
+                              <Text style={{fontSize: 16, fontWeight: "bold", color: "white"}}>Test ITEM</Text>
+                            </View>
+                        </TouchableHighlight>
+                    </View>
+
                  </View>
              </View>
-            
          </View>
-        
     )
 }
 

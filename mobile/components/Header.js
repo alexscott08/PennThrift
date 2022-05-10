@@ -5,17 +5,6 @@ import React from "react";
 import { Alert, Linking, StyleSheet, Text, View, Image, Button, TextInput, TouchableHighlight, TouchableOpacity } from 'react-native';
 
 const Header = (props) =>{
-    
-    /*
-    const navigate = useNavigate()
-
-    function logOut(){
-        axios.post('/api/auth/logout').then(res => navigate('/login', { replace: true }))
-        global.LOGGED_IN = false;
-    }
-    */
-
-    //global.LOGGED_IN = true;
 
     const navigation = props.navigation;
    
